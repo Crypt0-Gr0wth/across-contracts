@@ -1,0 +1,9 @@
+# Chapitre 2 — depositV3 : le depot sur la chaine source et le hash de relais
+
+`depositV3` (`contracts/spoke-pools/SpokePool.sol`) est le point d'entree par lequel un utilisateur initie un transfert. Il specifie le token et le montant d'entree sur la chaine source (`inputToken`/`inputAmount`), le token et le montant de sortie attendu sur la chaine de destination (`outputToken`/`outputAmount`), la chaine de destination, un `quoteTimestamp` (horodatage auquel le tarif a ete calcule hors-chaine), un `fillDeadline` apres lequel le depot n'est plus remplissable, et optionnellement un `exclusiveRelayer` avec une `exclusivityParameter` qui lui reserve le droit exclusif de remplir ce depot pendant une fenetre donnee.
+
+La difference entre `inputAmount` et `outputAmount` constitue la remuneration implicite du systeme : elle couvre a la fois les frais du relayeur (pour l'avance instantanee de capital et le risque pris) et les frais LP preleves par le `HubPool` pour la liquidite immobilisee. Ces montants sont calcules hors-chaine par l'API Across au moment du `quoteTimestamp` et ne sont pas verifies on-chain — le contrat fait simplement confiance au depositeur pour avoir choisi un `outputAmount` suffisamment attractif pour qu'un relayeur accepte de remplir le depot.
+
+Chaque depot recoit un identifiant unique via le compteur `numberOfDeposits` (incremente a chaque appel), et l'ensemble des parametres du depot — y compris le `chainId()` de la chaine source — est hashe pour former un `relayHash` unique qui identifie precisement ce transfert sur la chaine de destination. Modifier n'importe quel parametre change ce hash et cree donc un transfert distinct. Une variante `unsafeDeposit` permet a l'appelant de fournir son propre nonce de depot plutot que d'utiliser le compteur global, au prix d'un risque de collision de hash explicitement documente dans le code.
+
+[Chapitre suivant : fillRelay, le remplissage instantane par le relayeur](03-fillrelay.md)
