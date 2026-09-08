@@ -1,0 +1,9 @@
+# Chapitre 13 — Limites connues et perimetre de ce parcours
+
+Le code d'Across (`across-contracts`) est publie sous licence Business Source License 1.1 (`LICENSE`), une licence source-disponible avec restrictions d'usage commercial temporaires, differente des licences permissives MIT ou GPL rencontrees ailleurs dans cette bibliotheque.
+
+Ce depot est nettement plus vaste que les seuls mecanismes couverts ici : il contient egalement toute une famille de contrats « peripheriques » plus recents non couverts par ce parcours — un systeme d'execution generique appele Gateway (`executeAcrossV5`/`adapterExecuteAcrossV5` dans `SpokePool.sol`, avec ses structures `V5FillInput`/`V5FillJit`), des flux de transfert sponsorises via CCTP de Circle et via le protocole OFT de LayerZero (`contracts/periphery/mintburn/`), un systeme de depots contrefactuels precalcules (`contracts/periphery/counterfactual/`), une integration ERC-7683 pour l'interoperabilite avec d'autres systemes d'intents, ainsi qu'un support specifique a Tron et Solana (SVM) qui suit des motifs distincts du reste du code EVM.
+
+Ce parcours ne couvre pas non plus en detail `AcrossConfigStore.sol` (parametres de configuration additionnels du protocole), `BondToken.sol`, ni les scripts de deploiement Foundry (`script/`). Le mecanisme precis de calcul hors-chaine des frais LP dynamiques et des quotes de relayeurs, effectue par l'API Across et non par les contrats eux-memes, n'est pas non plus documente ici puisqu'il ne fait pas partie du code on-chain.
+
+Rien n'a ete installe, compile, deploye ni execute pour ecrire ces chapitres. Aucun test n'a ete lance ; ces chapitres decrivent ce que le code Solidity dit faire, en renvoyant aux fichiers cites. Le depot fournit sa propre suite de tests (dossier `test/`) pour verification independante.
