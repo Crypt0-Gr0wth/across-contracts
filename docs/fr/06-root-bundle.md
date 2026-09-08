@@ -1,0 +1,9 @@
+# Chapitre 6 — proposeRootBundle : la proposition bondee de racines merkle par le dataworker
+
+Periodiquement, un acteur hors-chaine appele le « dataworker » observe l'ensemble des depots et remplissages survenus sur toutes les chaines, calcule les remboursements dus a chaque relayeur et les rebalancements de liquidite necessaires entre le `HubPool` et chaque `SpokePool`, puis soumet le resultat sous forme de trois racines merkle via `proposeRootBundle` (`contracts/hub-pool/HubPool.sol`) : une racine de « pool rebalance » (mouvements de fonds entre HubPool et SpokePools), une racine de remboursement de relayeurs, et une racine de remplissages lents.
+
+Cette proposition n'est pas gratuite : le proposeur doit approuver et transferer un `bondAmount` de `bondToken` au `HubPool`, qui est restitue seulement si la proposition n'est pas contestee. Une fois soumise, la proposition entre dans une periode de contestation (`liveness`, fixee par defaut a `7200` secondes soit deux heures dans `HubPool.sol`) pendant laquelle quiconque peut la contester s'il pense qu'elle est incorrecte. `rootBundleProposal` (structure `RootBundle`) ne peut contenir qu'une seule proposition active a la fois — toute nouvelle proposition ecrase implicitement la precedente si elle n'a pas encore ete executee.
+
+Chaque « pool rebalance leaf » de la racine principale (`PoolRebalanceLeaf`, `contracts/interfaces/HubPoolInterface.sol`) precise, pour une chaine donnee, les frais LP totaux du bundle par token, les `netSendAmounts` (montant net a envoyer au SpokePool si positif, ou a rapatrier si negatif) et les `runningBalances` (solde cumulatif non regle entre le HubPool et le SpokePool, utilise uniquement a des fins de suivi hors-chaine).
+
+[Chapitre suivant : disputeRootBundle et l oracle optimiste UMA](07-dispute-uma.md)
