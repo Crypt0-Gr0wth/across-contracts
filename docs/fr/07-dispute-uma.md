@@ -1,0 +1,9 @@
+# Chapitre 7 — disputeRootBundle : l'arbitrage d'une proposition contestee par l'oracle optimiste UMA
+
+Si quiconque estime qu'une proposition de root bundle est incorrecte (par exemple parce que le dataworker a mal calcule un remboursement), il peut appeler `disputeRootBundle` (`contracts/hub-pool/HubPool.sol`) pendant la fenetre de `liveness`, a condition de miser lui-meme un `bondAmount` de `bondToken`. Contrairement a une simple contestation binaire, cet appel delegue explicitement l'arbitrage a l'oracle optimiste d'UMA (`SkinnyOptimisticOracleInterface`, importe depuis `contracts/external/uma/`), un systeme tiers specialise dans la resolution de litiges on-chain par vote des token-holders UMA en cas de desaccord persistant.
+
+Le mecanisme suit le motif classique d'un oracle optimiste : la proposition initiale est consideree comme vraie par defaut si personne ne la conteste dans le delai imparti (d'ou « optimiste »). En cas de contestation, `requestAndProposePriceFor` soumet la question a UMA avec le meme `bondAmount` et la meme `liveness` que la proposition originale du dataworker, et la proposition en cours (`rootBundleProposal`) est immediatement supprimee (`delete rootBundleProposal`) le temps que le litige soit tranche.
+
+Ce choix d'architecture — s'appuyer sur un oracle optimiste externe plutot que sur une verification on-chain complete des calculs du dataworker — est deliberement pragmatique : verifier on-chain l'exactitude d'un rebalancement agregeant potentiellement des milliers de depots et remplissages a travers plusieurs chaines serait prohibitif en gas, alors que le systeme de bond economique dissuade suffisamment les propositions frauduleuses en rendant une attaque couteuse et economiquement irrationnelle si elle est correctement contestee.
+
+[Chapitre suivant : executeRootBundle et la propagation des racines vers les spoke pools](08-execute-root-bundle.md)
