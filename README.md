@@ -1,3 +1,7 @@
+## Parcours francais
+
+Ce depot contient un parcours pedagogique en francais dans docs/fr/ : lecture commentee d Across, le protocole de bridge cross-chain par intents fonde sur SpokePool/HubPool et les relayeurs, un mecanisme par chapitre, sans aucune installation ni execution du projet.
+
 ![Across-logo](https://raw.githubusercontent.com/across-protocol/across-frontend/65abd7772704a9ec243fd370f9e8e76322f0905b/src/assets/logo.svg)
 
 Contains smart contract suite to enable instant token transfers between any two networks. Relays are backstopped by
