@@ -1,0 +1,9 @@
+# Chapitre 10 — MerkleLib : les preuves merkle et le suivi bitmap des reclamations
+
+`MerkleLib.sol` (`contracts/libraries/MerkleLib.sol`) centralise les trois fonctions de verification de preuve utilisees a travers le protocole : `verifyPoolRebalance` (chapitre 8, cote HubPool), `verifyRelayerRefund` (chapitre 9, cote SpokePool) et `verifyV3SlowRelayFulfillment` (chapitre 4, cote SpokePool). Les trois s'appuient sur la meme primitive `MerkleProof.verify` d'OpenZeppelin, appliquee au hash `keccak256(abi.encode(...))` de la structure concernee — la seule difference entre elles est le type de structure hashee.
+
+Ce choix de calculer le hash de feuille directement depuis `abi.encode` de la structure Solidity, plutot que depuis un encodage personnalise, simplifie la generation des arbres merkle hors-chaine : le dataworker peut construire l'arbre en encodant les structures exactement comme le fait Solidity, sans avoir a reimplementer une logique d'encodage bit a bit specifique au protocole.
+
+Le suivi des feuilles deja executees repose sur deux variantes de bitmap : `isClaimed`/`setClaimed`, qui operent sur un `mapping(uint256 => uint256)` en stockage pour un nombre arbitrairement grand d'index (utilise pour les feuilles de remboursement de relayeurs sur le SpokePool, potentiellement nombreuses), et `isClaimed1D`/`setClaimed1D`, qui operent sur un simple `uint256` limite a 256 index (utilise pour les pool rebalance leaves sur le HubPool, dont le nombre par bundle est intentionnellement borne). Ce motif de bitmap, directement inspire du Merkle Distributor d'Uniswap comme le precise le commentaire du fichier, permet de verifier et marquer une reclamation en un seul SLOAD/SSTORE par mot de 256 bits plutot qu'un mapping booleen par index.
+
+[Chapitre suivant : les chain adapters, l abstraction des ponts canoniques](11-chain-adapters.md)
